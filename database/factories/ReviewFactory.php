@@ -25,4 +25,31 @@ class ReviewFactory extends Factory
             'updated_at' => $this->faker->dateTimeBetween('created_at', 'now'),
         ];
     }
+
+    public function good(): ReviewFactory|Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'rating' => $this->faker->numberBetween(4, 5)
+            ];
+        });
+    }
+
+    public function average(): ReviewFactory|Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'rating' => $this->faker->numberBetween(2, 5)
+            ];
+        });
+    }
+
+    public function bad(): ReviewFactory|Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'rating' => $this->faker->numberBetween(1, 3)
+            ];
+        });
+    }
 }
