@@ -44,4 +44,11 @@ Book::withCount('reviews')->withAvg('reviews', 'rating')->having('reviews_count'
 
 After added functions: scopePopular (Builder $query) and scopeHighestRated (Builder $query):
 Book::popular()->highestRated()->get(); get all books sorted by amount of reviews and then by rating.
+Book::highestRated('2024-01-01','2024-02-01')->get(); get books sorted by reviews average rating in this range
+Book::popular()->get(); get all books sorted by amount of reviews
+Book::popular('2024-01-01', '2024-03-01')->get(); get books sorted by amount of reviews in this range
+
+After added function: scopeMinReviews(Builder $query, int $minReviews)
+Get books sorted by amount of reviews and then by rating in this range with minimum 2 reviews:
+Book::highestRated('2024-01-01','2024-02-01')->popular('2024-01-01','2024-02-01')->minReviews(2)->get();
 
