@@ -1,0 +1,47 @@
+Commands:
+php artisan tinker
+$book = Book::find(1); to get a book with id=1 from database and print in console
+$reviews = $book->reviews; to get reviews for the book id=1
+$book->load('reviews'); to get reviews for the book id=1
+Book::with('reviews')->find(2); to get a book id=2 and all its reviews
+$books = Book::with('reviews')->take(3)->get(); to get first 3 books with their reviews
+
+$review = Review::find(2); to get a review id=2
+$review->book; to get a book for the review id=2
+
+Moving a review from one book to another:
+$book = Book::find(1); to get a book id=1
+$book2 = Book::find(2); to get a book id=2
+$book2->reviews()->save($review); moves the review from book id=1 to book id=2
+
+Creating a new review:
+php artisan tinker
+$book = Book::find(1)
+$review = new Review();
+$review->review = 'This was fine';
+$review->rating = 3;
+$book->reviews()->save($review); one way to save a new review to database
+$review->book_id = 1; $review -> save(); another way to save a new review
+
+After adding the code: protected $fillable = ['review', 'rating']; to Review.php:
+$book = Book::find(1)
+$review = $book->reviews()->create(['review' => 'Sample review', 'rating' => 5]); creates and saves review
+
+Book::where('title', 'LIKE', '%velit%')->get(); to get all books containing "velit" in its title
+After adding function scopeTitle (Builder $query, string $title) to Book.php:
+Book::title('velit')->get(); to get all books containing "velit" in its title
+Book::title('velit')->where('created_at', '>', '2024-01-01')->get(); to get books created after 2024-01-01
+Book::title('velit')->where('created_at', '>', '2024-01-01')->toSql(); to show SQL query is going to be used
+
+Book::withCount('reviews')->get(); to get all books with additional field "reviews_count"
+Book::withCount('reviews')->latest()->limit(5)->get(); to get 5 the most recent books
+
+To get first 5 books with the lowest average rating in ascending oder:
+Book::withAvg('reviews', 'rating')->limit(5)->orderBy('reviews_avg_rating')->get();
+
+To get first 10 books with the lowest average rating in descending order and no less than 6 reviews for each book:
+Book::withCount('reviews')->withAvg('reviews', 'rating')->having('reviews_count', '>=', 6)->orderBy('reviews_avg_rating', 'desc')->limit(10)->get();
+
+After added functions: scopePopular (Builder $query) and scopeHighestRated (Builder $query):
+Book::popular()->highestRated()->get(); get all books sorted by amount of reviews and then by rating.
+
